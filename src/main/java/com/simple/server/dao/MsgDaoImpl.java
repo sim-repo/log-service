@@ -40,8 +40,7 @@ public class MsgDaoImpl implements MsgDao{
 	public void batchInsertBus(List<IContract> msgList) throws Exception {
 		int count=0;
 		for(IContract msg: msgList){
-			try{			
-				System.out.println("log: "+msg);
+			try{							
 				currentSession().save(msg);	
 			}catch(SQLException e){
 				e.printStackTrace();

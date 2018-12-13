@@ -76,6 +76,7 @@
 				<value>hbm/mysql/LogBusDefErrMsg.hbm.xml</value>
 				<value>hbm/mysql/RoutingRedirect.hbm.xml</value>
 				<value>hbm/mysql/SessionFactory.hbm.xml</value>
+				<value>hbm/mysql/TimeoutPolicies.hbm.xml</value>
 			</list>
 		</property>		
 	</bean>

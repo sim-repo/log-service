@@ -14,7 +14,7 @@ public class BusMsgHandler extends AbstractMsgHandler{
 	public void handleBusJsonMsg(String json) throws Exception {
 		DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		Date date = new Date();	
-		System.out.println("log: handle " + dateFormat.format(date));	
+
 	
 		getAppConfig().getDirtyBusJsonQueue().put(json);
 	}

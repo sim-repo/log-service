@@ -12,6 +12,9 @@
 		
 		<property name="methodName" column="[method_name]" />
 		<property name="useAuth" column="[use_auth]" />
-		<property name="url" column="[url]"/>											
+		<property name="url" column="[url]"/>		
+		<property name="contentType" column="[content_type]"/>	
+		<property name="isPost" column="[is_post]"/>	
+											
 	</class>
 </hibernate-mapping>
