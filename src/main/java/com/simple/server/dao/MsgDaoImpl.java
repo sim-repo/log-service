@@ -53,6 +53,11 @@ public class MsgDaoImpl implements MsgDao{
 	}
 	
 	@Override
+	public void insertOrUpdate(IContract msg) throws Exception {
+		currentSession().saveOrUpdate(msg);
+	}
+	
+	@Override
 	public void insert(IContract msg) throws Exception {
 		currentSession().save(msg);	
 	}

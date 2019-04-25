@@ -77,6 +77,8 @@
 				<value>hbm/mysql/RoutingRedirect.hbm.xml</value>
 				<value>hbm/mysql/SessionFactory.hbm.xml</value>
 				<value>hbm/mysql/TimeoutPolicies.hbm.xml</value>
+				<value>hbm/mysql/DbUniGetter.hbm.xml</value>
+				<value>hbm/mysql/Login.hbm.xml</value>
 			</list>
 		</property>		
 	</bean>

@@ -35,6 +35,13 @@ public class ServiceImpl implements IService{
 	}
 	
 	@Override
+	@Transactional
+	public void insertOrUpdate(IContract msg) throws Exception {
+		getAppConfig().getMsgDao().insertOrUpdate(msg);
+	}
+	
+	
+	@Override
 	public void insert(List<IContract> msgList) throws Exception {
 		for(IContract msg: msgList){
 			getAppConfig().getMsgDao().insert(msg);

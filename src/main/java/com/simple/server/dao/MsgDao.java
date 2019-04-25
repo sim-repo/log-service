@@ -16,4 +16,5 @@ public interface MsgDao {
 	void batchInsertSys(List<SysMessage> msgList) throws Exception;
 	List<IContract> readAll(IContract msg) throws Exception;
 	List<IContract> readbySQLCriteria(IContract msg, String sql) throws Exception;
+	void insertOrUpdate(IContract msg) throws Exception;
 }
