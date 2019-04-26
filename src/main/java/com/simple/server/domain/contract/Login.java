@@ -1,5 +1,7 @@
 package com.simple.server.domain.contract;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -16,7 +18,7 @@ public class Login extends AbstractLogMsg{
 	protected Integer id;
 	
 	String login;
-	String expire;
+	Date expire;
 	String psw;
 	String salt;
 	
@@ -38,10 +40,10 @@ public class Login extends AbstractLogMsg{
 	public void setPsw(String psw) {
 		this.psw = psw;
 	}
-	public String getExpire() {
+	public Date getExpire() {
 		return expire;
 	}
-	public void setExpire(String expire) {
+	public void setExpire(Date expire) {
 		this.expire = expire;
 	}
 	

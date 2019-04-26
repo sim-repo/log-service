@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.simple.server.domain.contract">
+						
+	<class name="DbSecureUniGetter" table="[routing db secure exec]">		
+		<id name="id" column="[id]">
+			<generator class="native" />
+		</id>
+		
+		<property name="endpointId" column="[endpoint_id]" />
+		
+		<property name="method" column="[method_name]" />
+			
+		<property name="executedFunctionName" column="[function_call_statement]"/>		
+		
+		<property name="hibernateParamsMap" column="[params_web_func_map]"/>	
+
+		<property name="description" column="[description]"/>
+	
+
+		<property name="resultHandlerType" column="[result_handler]" >
+		  <type name="org.hibernate.type.EnumType">
+		        <param name="enumClass">com.simple.server.config.HandlerResultType</param>
+		         <param name="useNamed">true</param>
+		    </type>
+		</property>
+											
+	</class>
+</hibernate-mapping>
