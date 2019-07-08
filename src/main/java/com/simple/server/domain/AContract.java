@@ -266,7 +266,7 @@ public abstract class AContract implements IContract {
 	}
 
 	public void setDetails(String details) {
-		this.details = details;
+		this.details =  details.length() > 4096 ? details.substring(0, 4095) : details;		
 	}
 
 }

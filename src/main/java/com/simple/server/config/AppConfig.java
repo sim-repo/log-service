@@ -49,9 +49,7 @@ public class AppConfig {
 	private LinkedBlockingQueue<SysMessage> sysMsgQueue;
 
 	private Mediator mediator = new Mediator();
-
 	
-	private static final Logger logger = LogManager.getLogger(AppConfig.class);
 	
 	public Mediator getMediator() {
 		return mediator;
@@ -99,10 +97,6 @@ public class AppConfig {
 	
 	public LinkedBlockingQueue<AbstractLogMsg> getBusLogMsgQueue() {
 		return busLogMsgQueue;
-	}
-		
-	public static Logger getLogger() {
-		return logger;
 	}
 
 	public void initDirtyBusJsonQueue(int size){

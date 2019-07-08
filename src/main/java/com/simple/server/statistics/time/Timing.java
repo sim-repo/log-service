@@ -8,8 +8,9 @@ import java.util.TimerTask;
 import com.simple.server.statistics.Statistic;
 
 public class Timing extends TimerTask {
-    public static final Long SLEEP = 2000l;
-    public static final Long PHASE_TIME_SLEEP = 5l;
+    public static final Long SLEEP = 5l;
+    public static final Long MAX_SLEEP = 2000l;
+    public static final Long PHASE_TIME_SLEEP = 5000l;
     
     private List<Statistic> statistics = new ArrayList<>();
 
@@ -27,6 +28,10 @@ public class Timing extends TimerTask {
 
     public static Long getSleep() {
         return SLEEP;
+    }
+    
+    public static Long getSleep4Wait() {
+        return MAX_SLEEP;
     }
            
     public static Long getPhaseTimeSleep() {

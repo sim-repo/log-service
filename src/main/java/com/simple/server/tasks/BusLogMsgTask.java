@@ -15,6 +15,7 @@ import com.simple.server.domain.contract.IContract;
 import com.simple.server.lifecycle.HqlStepsType;
 import com.simple.server.mediators.CommandType;
 import com.simple.server.statistics.time.Timing;
+import com.simple.server.util.MyLogger;
 
 @SuppressWarnings("static-access")
 @Service("BusLogMsgTask")
@@ -48,18 +49,22 @@ public class BusLogMsgTask extends AbstractTask  {
 	
 	@Override
 	public void task() throws Exception {
-		
-		if (appConfig.getBusLogMsgQueue().drainTo(list, MAX_NUM_ELEMENTS) == 0)
-			list.add(appConfig.getBusLogMsgQueue().take());
-
-		Thread.currentThread().sleep(Timing.getSleep());
-
-		while (basePhaser.getCurrNumPhase() != HqlStepsType.START.ordinal()) {
-			if (appConfig.getBusLogMsgQueue().size() > 0)
-				appConfig.getBusLogMsgQueue().drainTo(list, MAX_NUM_ELEMENTS);
+		try {
+			if (appConfig.getBusLogMsgQueue().drainTo(list, MAX_NUM_ELEMENTS) == 0)
+				list.add(appConfig.getBusLogMsgQueue().take());
+	
+			Thread.currentThread().sleep(Timing.getSleep());
+	
+			while (basePhaser.getCurrNumPhase() != HqlStepsType.START.ordinal()) {
+				if (appConfig.getBusLogMsgQueue().size() > 0)
+					appConfig.getBusLogMsgQueue().drainTo(list, MAX_NUM_ELEMENTS);
+			}
+			
+			appConfig.getMsgService().insertBus(list);
+			list.clear();
+		}catch(Exception e) {
+			list.clear();
+			MyLogger.error(getClass(), e);	
 		}
-		
-		appConfig.getMsgService().insertBus(list);
-		list.clear();
 	}
 }

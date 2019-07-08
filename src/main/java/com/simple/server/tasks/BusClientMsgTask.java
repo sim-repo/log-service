@@ -1,8 +1,7 @@
 package com.simple.server.tasks;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
@@ -20,6 +19,7 @@ import com.simple.server.lifecycle.HqlStepsType;
 import com.simple.server.mediators.CommandType;
 import com.simple.server.statistics.time.Timing;
 import com.simple.server.util.DateTimeConverter;
+import com.simple.server.util.MyLogger;
 
 @SuppressWarnings("static-access")
 @Service("BusClientMsgTask")
@@ -27,7 +27,7 @@ import com.simple.server.util.DateTimeConverter;
 public class BusClientMsgTask extends AbstractTask {
 	@Autowired
 	private AppConfig appConfig;
-
+	Boolean isBatchOperation = false;
 	private final static Integer MAX_NUM_ELEMENTS = 100000;
 	private List<AContract> list = new ArrayList<AContract>();
 	private List<IContract> newList = new ArrayList<IContract>();
@@ -52,43 +52,67 @@ public class BusClientMsgTask extends AbstractTask {
 
 	@Override
 	public void task() throws Exception {
-		
-		if (appConfig.getBusClientMsgQueue().drainTo(list, MAX_NUM_ELEMENTS) == 0)
-			list.add(appConfig.getBusClientMsgQueue().take());
-
-		Thread.currentThread().sleep(Timing.getSleep());
-
-		while (basePhaser.getCurrNumPhase() != HqlStepsType.START.ordinal()) {
-			if (appConfig.getBusClientMsgQueue().size() > 0)
-				appConfig.getBusClientMsgQueue().drainTo(list, MAX_NUM_ELEMENTS);
-		}
-		
-		String datetime = DateTimeConverter.getCurDate();		
-		
-		for(AContract msg: list){
-			
-			msg.setLogDatetime(datetime);
-			msg.setLoggerId(this.toString());
-
-			if (msg instanceof BusWriteMsg) {
-				BusWriteMsg bmsg = (BusWriteMsg) msg;
-				if ((bmsg.getServiceRoleFrom() != null) && bmsg.getServiceIdTo() == null
-						&& bmsg.getServiceRoleFrom().equals(RoleType.FRONT_SERVICE.toString())) {
+		try {
+			if (appConfig.getBusClientMsgQueue().drainTo(list, MAX_NUM_ELEMENTS) == 0)
+				list.add(appConfig.getBusClientMsgQueue().take());
 	
-					BusReplyMsg busReplyMsg = new BusReplyMsg();
-					busReplyMsg.setJuuid(msg.getJuuid());
-					busReplyMsg.setResponseContentType(msg.getResponseContentType());
-					busReplyMsg.setResponseContractClass(msg.getResponseContractClass());
-					busReplyMsg.setResponseURI(msg.getResponseURI());
-					newList.add(busReplyMsg);
+			Thread.currentThread().sleep(Timing.getSleep4Wait());
+			list.add(appConfig.getBusClientMsgQueue().take());
+			isBatchOperation = false;
+			if (list.size() > 50) {
+				isBatchOperation = true;
+				MyLogger.debug(getClass(), new Date()+": batch insert mode enabled");
+				while (basePhaser.getCurrNumPhase() != HqlStepsType.START.ordinal()) {
+					if (appConfig.getBusClientMsgQueue().size() > 0)
+						appConfig.getBusClientMsgQueue().drainTo(list, MAX_NUM_ELEMENTS);
 				}
-			}	
-			newList.add(msg);
-		}
+			}
+
 			
-		appConfig.getMsgService().insertBus(newList);
-		list.clear();
-		newList.clear();
+			String datetime = DateTimeConverter.getCurDate();		
+			
+			for(AContract msg: list){
+				
+				msg.setLogDatetime(datetime);
+				msg.setLoggerId(this.toString());
+	
+				if (msg instanceof BusWriteMsg) {
+					BusWriteMsg bmsg = (BusWriteMsg) msg;
+					if ((bmsg.getServiceRoleFrom() != null) && bmsg.getServiceIdTo() == null
+							&& bmsg.getServiceRoleFrom().equals(RoleType.FRONT_SERVICE.toString())) {
+		
+						BusReplyMsg busReplyMsg = new BusReplyMsg();
+						busReplyMsg.setJuuid(msg.getJuuid());
+						busReplyMsg.setResponseContentType(msg.getResponseContentType());
+						busReplyMsg.setResponseContractClass(msg.getResponseContractClass());
+						busReplyMsg.setResponseURI(msg.getResponseURI());
+						if (isBatchOperation) {
+							newList.add(busReplyMsg);
+						} else {
+							appConfig.getMsgService().insert(busReplyMsg);
+						}
+					}
+				}
+				if (isBatchOperation) {
+					newList.add(msg);
+				} else {
+					appConfig.getMsgService().insert(msg);
+				}
+			}
+			
+			if (isBatchOperation) {
+				appConfig.getMsgService().insertBus(newList);				
+				newList.clear();
+			}
+			list.clear();
+			
+		} catch(Exception e ) {
+			if (list.size() > 10) {
+				newList.clear();				
+			}
+			list.clear();
+			MyLogger.error(getClass(), e);	
+		}
 	}
 
 }

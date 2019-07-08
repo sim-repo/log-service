@@ -16,19 +16,19 @@ public class PostInit implements ApplicationListener<ContextRefreshedEvent> {
 	  @Autowired
 	  AppConfig appConfig;	  
 	  
-	  @Value("${dirtyBusJsonQueueCapacity.int.property :100}")
+	  @Value("${log.dirtyQueue.size :10000}")
 	  private int dirtyBusJsonQueueCapacity;
 	  
-	  @Value("${dirtySrvJsonQueueCapacity.int.property :100}")
+	  @Value("${log.dirtySrvQueue.size :10000}")
 	  private int dirtySrvJsonQueueCapacity;
 	  
-	  @Value("${busClientMsgQueueCapacity.int.property :100}")
+	  @Value("${log.busQueue.size :10000}")
 	  private int busClientMsgQueueCapacity;
 	  	  
-	  @Value("${busLogMsgQueueCapacity.int.property :100}")
+	  @Value("${log.busQueue.size :10000}")
 	  private int busLogMsgQueueCapacity;
 	  
-	  @Value("${dirtySysMsgQueueCapacity.int.property :100}")
+	  @Value("${log.dirtySrvQueue.size :10000}")
 	  private int dirtySysMsgQueueCapacity;
 	  
 	  

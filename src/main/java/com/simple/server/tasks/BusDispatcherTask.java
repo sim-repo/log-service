@@ -5,14 +5,15 @@ import com.simple.server.config.AppConfig;
 import com.simple.server.domain.AContract;
 import com.simple.server.domain.AbstractLogMsg;
 import com.simple.server.domain.contract.IContract;
-import com.simple.server.lifecycle.HqlStepsType;
 import com.simple.server.mediators.CommandType;
-import com.simple.server.statistics.time.Timing;
+import com.simple.server.util.MyLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class BusDispatcherTask extends AbstractTask {
 	private final static Integer MAX_NUM_ELEMENTS = 100000;
 	private List<String> list = new ArrayList<String>();
 	private ObjectMapper mapper = new ObjectMapper();
+			
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -69,8 +71,8 @@ public class BusDispatcherTask extends AbstractTask {
 					appConfig.getBusLogMsgQueue().put((AbstractLogMsg)msg);
 				}
 			}
-		} catch (Exception e) {			
-			e.printStackTrace();
+		} catch (Exception e) {		
+			MyLogger.error(getClass(), e);
 		}
 		list.clear();
 	}

@@ -18,7 +18,7 @@
 		
 		<property name="hibernateParamsMap" column="[params_web_func_map]"/>	
 
-		<property name="paramsFormat" column="[params_format]"/>
+		<property name="description" column="[description]"/>
 	
 
 		<property name="resultHandlerType" column="[result_handler]" >

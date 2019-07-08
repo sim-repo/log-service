@@ -1,7 +1,5 @@
 package com.simple.server.dao;
 
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -15,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.simple.server.domain.SysMessage;
 import com.simple.server.domain.contract.IContract;
+import com.simple.server.util.MyLogger;
 
 
 @Service("msgDao")
@@ -23,7 +22,7 @@ public class MsgDaoImpl implements MsgDao{
 
 	@Autowired
 	SessionFactory mysqlSessionFactory;
-		
+			
 	@Override
 	public Session currentSession() throws Exception{				
 		return mysqlSessionFactory.getCurrentSession();
@@ -42,8 +41,8 @@ public class MsgDaoImpl implements MsgDao{
 		for(IContract msg: msgList){
 			try{							
 				currentSession().save(msg);	
-			}catch(SQLException e){
-				e.printStackTrace();
+			}catch(Exception e){
+				MyLogger.error(getClass(), e);						
 			}			
 			if (++count % 50 == 0 ) {
 				currentSession().flush();
@@ -69,8 +68,8 @@ public class MsgDaoImpl implements MsgDao{
 				currentSession().save(msg);	
 				currentSession().flush();
 				currentSession().clear();
-			}catch(SQLException e){
-				e.printStackTrace();
+			}catch(Exception e){
+				MyLogger.error(getClass(), e);					
 			}					
 		}		
 	}

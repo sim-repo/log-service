@@ -8,13 +8,12 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.servlet.http.HttpServletRequest;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
-import com.simple.server.domain.contract.IContract;
 import com.simple.server.lifecycle.BasePhaser;
 import com.simple.server.lifecycle.Deactivator;
 import com.simple.server.mediators.CommandType;
@@ -24,6 +23,7 @@ import com.simple.server.service.IService;
 import com.simple.server.statistics.Statistic;
 import com.simple.server.statistics.time.Timing;
 import com.simple.server.tasks.states.State;
+import com.simple.server.util.MyLogger;
 
 
 public abstract class AbstractTask extends Observable implements Task, Callable, Observer {
@@ -155,7 +155,7 @@ public abstract class AbstractTask extends Observable implements Task, Callable,
             }
 
         }catch (Exception e){
-            e.printStackTrace();
+        	MyLogger.error(getClass(), e);
         }finally {
             lock.unlock();
         }
@@ -175,7 +175,6 @@ public abstract class AbstractTask extends Observable implements Task, Callable,
 
     @Override
     public Object call() throws Exception {
-        System.out.println(this);
         
         while(!executor.isShutdown()){
             try {            	
@@ -184,7 +183,7 @@ public abstract class AbstractTask extends Observable implements Task, Callable,
                     wakeup.await();     
                 }
             }catch (Exception e) {
-                e.printStackTrace();
+            	MyLogger.error(getClass(), e);
             }finally {
                 lock.unlock();
             }
@@ -208,6 +207,7 @@ public abstract class AbstractTask extends Observable implements Task, Callable,
                     setIsActive(false);
                 }
             }catch (Exception e){
+            	MyLogger.error(getClass(), e);
                 setChanged();
                 notifyObservers(getOnRuntimeError());
 

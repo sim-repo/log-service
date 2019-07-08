@@ -1,12 +1,17 @@
 package com.simple.server.mediators;
 
-
 import java.util.*;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import com.simple.server.tasks.states.State;
+import com.simple.server.util.MyLogger;
 
 
 public class Mediator extends Observable implements Observer {
+	
+	
     @Override
     public void update(Observable o, Object arg) {
         if (arg != null && !arg.getClass().equals(State.class)) {
@@ -15,7 +20,7 @@ public class Mediator extends Observable implements Observer {
         }
         else
         if (arg instanceof State) {
-            System.out.println("Mediator:"+o.getClass()+":"+((State) arg).getMessage());
+        	MyLogger.error(getClass(), "Mediator:"+o.getClass()+":"+((State) arg).getMessage());	
         }
     }
     

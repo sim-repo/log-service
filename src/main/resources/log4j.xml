@@ -2,44 +2,67 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<appender name="file" class="org.apache.log4j.RollingFileAppender">
-	   <param name="append" value="false" />
-	   <param name="maxFileSize" value="3000KB" />
-	   <param name="maxBackupIndex" value="5" />
-	   <!-- For Tomcat -->
-	   <param name="file" value="${catalina.home}/logs/log-errors.txt" />
+
+	
+	
+	<appender name="warn-log" class="org.apache.log4j.RollingFileAppender">
+	   <param name="append" value="false" />  
+	   <param name="encoding" value="UTF-8" />	 
+	   <param name="MaxFileSize" value="10MB"/> 
+	   <param name="MaxBackupIndex" value="5"/>	
+	   <param name="file" value="${catalina.home}/logs/log-warn.log" />	   
+	  
 	   <layout class="org.apache.log4j.PatternLayout">
 		<param name="ConversionPattern"
-			value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+			value="%d{yyyy-MM-dd HH:mm:ss};%m%n" />
 	   </layout>
+	   <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="warn" />
+            <param name="LevelMax" value="warn" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
 	</appender>
 	
-	<!-- Application Loggers -->
-	<logger name="com.simple.log">
-		<level value="info" />
-	</logger>
+	<appender name="error-log" class="org.apache.log4j.RollingFileAppender">
+	   		
+	   <param name="file" value="${catalina.home}/logs/log-error.log" />
+	   <param name="MaxFileSize" value="10MB"/> 
+	   <param name="MaxBackupIndex" value="5"/>		
+	     	   	  
+	   <layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern"
+			value="%d{yyyy-MM-dd HH:mm:ss};%m%n" />
+	   </layout>
+	   <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="error" />
+            <param name="LevelMax" value="fatal" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+	</appender>
+	 
+	<appender name="info-log" class="org.apache.log4j.RollingFileAppender">
+	   <param name="append" value="false" />  
+	   <param name="encoding" value="UTF-8" />	 
+	   <param name="MaxFileSize" value="10MB"/> 
+	   <param name="MaxBackupIndex" value="5"/>	
+	   <param name="file" value="${catalina.home}/logs/log-info.log" />	   
+	  
+	   <layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern"
+			value="%d{yyyy-MM-dd HH:mm:ss};%m%n" />
+	   </layout>
+	   <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="info" />
+            <param name="LevelMax" value="info" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+	</appender>
 	
-	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.springframework.beans">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.springframework.context">
-		<level value="info" />
+
+	<logger name="com.simple.server">
+		<appender-ref ref="info-log" />
+		<appender-ref ref="warn-log" />
+		<appender-ref ref="error-log" />		
 	</logger>
 
-	<logger name="org.springframework.web">
-		<level value="info" />
-	</logger>
-
-	<!-- Root Logger -->
-	<root>
-		<priority value="ERROR" />
-		<appender-ref ref="file" />
-	</root>
-	
 </log4j:configuration>

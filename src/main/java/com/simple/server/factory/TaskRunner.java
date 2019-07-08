@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import com.simple.server.service.IService;
 import com.simple.server.tasks.AbstractTask;
 import com.simple.server.tasks.BusDispatcherTask;
 import com.simple.server.tasks.BusLogMsgTask;
+import com.simple.server.tasks.CheckConnectionTask;
 import com.simple.server.tasks.BusClientMsgTask;
 import com.simple.server.tasks.Task;
 
@@ -38,6 +40,17 @@ public class TaskRunner  {
 	@Autowired
 	private AppConfig appConfig;
 		
+	
+	@Value("${log.task.dispatch.num :1}")
+	private Integer busDispatcherTaskNum;
+	
+	@Value("${log.task.clientMsg.num :1}")
+	private Integer cientMsgTaskNum;
+
+	@Value("${log.task.logMsgTask.num :1}")
+	private Integer logMsgTaskNum;
+	
+	
     CopyOnWriteArrayList<ExecutorService> executors = new CopyOnWriteArrayList<>();
     ConcurrentHashMap<Object, List<Task>> tasks = new ConcurrentHashMap<>();
 
@@ -98,9 +111,10 @@ public class TaskRunner  {
   
     public void initProcessing() {        
         	try {		        		 
-        		newRunTask(appConfig.getMediator(), BusDispatcherTask.class, 1);
-        		newRunTask(appConfig.getMediator(), BusClientMsgTask.class, 1);
-        		newRunTask(appConfig.getMediator(), BusLogMsgTask.class, 1);
+        		newRunTask(appConfig.getMediator(), BusDispatcherTask.class, busDispatcherTaskNum);
+        		newRunTask(appConfig.getMediator(), BusClientMsgTask.class, cientMsgTaskNum);
+        		newRunTask(appConfig.getMediator(), BusLogMsgTask.class, logMsgTaskNum);
+        		newRunTask(appConfig.getMediator(), CheckConnectionTask.class, 1);
         		BasePhaser hqlPhaser = appConfig.getPhaserRunner().newRunPhaser(appConfig.getMediator(), BasePhaser.class, HqlStepsType.FINISH.ordinal());                        		 	
             	appConfig.getMediator().wakeupAll();
         	} catch (Exception e) {
